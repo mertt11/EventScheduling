@@ -1,17 +1,21 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.ModelUser;
+import com.example.demo.repository.EventRepository;
 import com.example.demo.repository.ModelUserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
-    ModelUserRepository userRepository;
-    public UserService(ModelUserRepository userRepository){
+    private ModelUserRepository userRepository;
+    private EventRepository eventRepository;
+    public UserService(ModelUserRepository userRepository,EventRepository eventRepository){
         this.userRepository=userRepository;
+        this.eventRepository=eventRepository;
     }
 
     public List<ModelUser> getAllUsers() {
@@ -46,4 +50,9 @@ public class UserService {
     public ModelUser getOneUserByUserName(String email) {
         return userRepository.findByEmail(email);
     }
+
+    public ArrayList<ModelUser> findUsersInSpecificEvent(Long eventId){
+        return new ArrayList<>(eventRepository.findById(Long.valueOf(eventId)).get().getEnrolledUsers());
+    }
+
 }

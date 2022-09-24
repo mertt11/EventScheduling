@@ -1,18 +1,24 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="userdata")
 public class ModelUser {
     @Id
     @Column(name="id")
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String lastName;
     private String email;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "enrolledUsers",fetch = FetchType.EAGER)
+    private Set<Event> events=new HashSet<>();
     private String password;
 
     public ModelUser(Long id, String name, String lastName, String email, String password) {
@@ -62,5 +68,13 @@ public class ModelUser {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<Event> events) {
+        this.events = events;
     }
 }
