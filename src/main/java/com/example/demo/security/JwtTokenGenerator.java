@@ -11,7 +11,7 @@ import java.util.Date;
 @Component
 public class JwtTokenGenerator {
     private String secret="secretKey";
-    private long expires=5*60*1000;
+    private long expires=25*60*1000;//expires in 25 min
 
     public String generateJwtToken(Authentication auth){
         JwtUserDetails userDetails=(JwtUserDetails) auth.getPrincipal();
