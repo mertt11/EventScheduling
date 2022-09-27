@@ -20,6 +20,12 @@ public class ModelUser {
     @ManyToMany(mappedBy = "enrolledUsers",fetch = FetchType.EAGER)
     private Set<Event> events=new HashSet<>();
     private String password;
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(	name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> userRoles = new HashSet<>();
 
     public ModelUser(Long id, String name, String lastName, String email, String password) {
         this.id = id;
@@ -29,6 +35,10 @@ public class ModelUser {
         this.password = password;
     }
     public ModelUser(){}
+
+    public void addUserRoles(Role role){
+        userRoles.add(role);
+    }
 
     public Long getId() {
         return id;
@@ -76,5 +86,13 @@ public class ModelUser {
 
     public void setEvents(Set<Event> events) {
         this.events = events;
+    }
+
+    public Set<Role> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(Set<Role> userRoles) {
+        this.userRoles = userRoles;
     }
 }

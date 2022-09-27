@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.ModelUser;
+import com.example.demo.entity.Role;
+import com.example.demo.repository.RoleRepository;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +15,11 @@ import java.util.List;
 public class UserController {
     @Autowired
     private final UserService userService;
+    private RoleRepository roleRepository;
 
-    public UserController (UserService userService){
+    public UserController (UserService userService, RoleRepository roleRepository){
         this.userService=userService;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping("/get")
@@ -46,5 +50,13 @@ public class UserController {
 
     public ArrayList<ModelUser> findUsrs(@PathVariable Long eventId){
         return userService.findUsersInSpecificEvent(eventId);
+    }
+
+    @PostMapping("/admin/{id}")
+    public void beAdmin(@PathVariable Long id){
+        ModelUser user=userService.getOneUser(id);
+        Role role=roleRepository.findByRoleName("ADMIN");
+        user.addUserRoles(role);
+        userService.saveOneUser(user);
     }
 }

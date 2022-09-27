@@ -1,13 +1,16 @@
 package com.example.demo.security;
 
 import com.example.demo.entity.ModelUser;
+import com.example.demo.entity.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class JwtUserDetails implements UserDetails {
 
@@ -16,6 +19,7 @@ public class JwtUserDetails implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
+
     public JwtUserDetails(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
@@ -23,9 +27,18 @@ public class JwtUserDetails implements UserDetails {
         this.authorities = authorities;
     }
     public static JwtUserDetails create(ModelUser user){
-        List<GrantedAuthority> authorityList=new ArrayList<>();
-        authorityList.add(new SimpleGrantedAuthority("USER"));
-        return new JwtUserDetails(user.getId(),user.getEmail(),user.getPassword(),authorityList);
+        /*List<GrantedAuthority> authorityList=new ArrayList<>();
+        authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));*/
+        return new JwtUserDetails(user.getId(),user.getEmail(),user.getPassword(),getAuthorities(user));
+    }
+
+    private static Collection<GrantedAuthority> getAuthorities(ModelUser user){//sil
+        Set<Role> userRoles = user.getUserRoles();
+        Collection<GrantedAuthority> authorities = new ArrayList<>(userRoles.size());
+        for(Role r : userRoles){
+            authorities.add(new SimpleGrantedAuthority(r.getRoleName().toUpperCase()));
+        }
+        return authorities;
     }
 
     public Long getId() {

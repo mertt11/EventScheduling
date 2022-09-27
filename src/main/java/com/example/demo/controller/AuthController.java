@@ -1,9 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.ModelUser;
+import com.example.demo.entity.Role;
+import com.example.demo.repository.RoleRepository;
 import com.example.demo.request.UserRequest;
 import com.example.demo.security.JwtTokenGenerator;
 import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -24,12 +29,14 @@ public class AuthController {
     private final JwtTokenGenerator jwtTokenGenerator;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final RoleRepository roleRepository;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtTokenGenerator jwtTokenGenerator, PasswordEncoder passwordEncoder, UserService userService) {
+    public AuthController(AuthenticationManager authenticationManager, JwtTokenGenerator jwtTokenGenerator, PasswordEncoder passwordEncoder, UserService userService, RoleRepository roleRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenGenerator = jwtTokenGenerator;
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
     @PostMapping("/login")
@@ -49,7 +56,11 @@ public class AuthController {
         user.setLastName(signinRequest.getLastName());
         user.setEmail(signinRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signinRequest.getPassword()));
+
+        Role role=roleRepository.findByRoleName("USER");
+        user.addUserRoles(role);
         userService.saveOneUser(user);
         return new ResponseEntity<>("User successfully registered ",HttpStatus.CREATED);
+
     }
 }
