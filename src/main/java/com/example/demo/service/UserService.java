@@ -29,7 +29,9 @@ public class UserService {
     public ModelUser getOneUser(Long id) {
         return userRepository.findById(id).orElse(null);
     }
-
+    public boolean contain(String name,String lastName){
+        return userRepository.existsByNameAndLastNameIgnoreCase(name,lastName);
+    }
     /*public ModelUser updateOneUser(Long id, ModelUser user) {
         Optional<ModelUser> usr=userRepository.findById(id);
         if(usr.isPresent()){

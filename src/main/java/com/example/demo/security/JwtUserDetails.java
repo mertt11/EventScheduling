@@ -32,7 +32,7 @@ public class JwtUserDetails implements UserDetails {
         return new JwtUserDetails(user.getId(),user.getEmail(),user.getPassword(),getAuthorities(user));
     }
 
-    private static Collection<GrantedAuthority> getAuthorities(ModelUser user){//sil
+    private static Collection<GrantedAuthority> getAuthorities(ModelUser user){
         Set<Role> userRoles = user.getUserRoles();
         Collection<GrantedAuthority> authorities = new ArrayList<>(userRoles.size());
         for(Role r : userRoles){

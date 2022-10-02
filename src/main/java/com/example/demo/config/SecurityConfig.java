@@ -43,7 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception{
-        //authenticationManagerBuilder.inMemoryAuthentication().withUser();
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
     @Override
@@ -55,11 +54,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(handler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                //.antMatchers("/qqq/log").hasAnyAuthority("ADMIN")
-                .antMatchers("/qqq/log").hasAnyAuthority("ADMIN")
+                .antMatchers("/qqq/log","/users/giveadmin**","/{eventId}/send-email","/events/{eventId}/users/{userId}",
+                               "/events/del/{eventId}/users/{userId}","events/post").hasAnyAuthority("ADMIN")
                 .antMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated();
         httpSecurity.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
     }
-    //.hasAuthority("ADMIN")
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
-    @Autowired
+
     private final UserService userService;
     private RoleRepository roleRepository;
 
@@ -52,7 +52,7 @@ public class UserController {
         return userService.findUsersInSpecificEvent(eventId);
     }
 
-    @PostMapping("/admin/{id}")
+    @PostMapping("/giveadmin/{id}")
     public void beAdmin(@PathVariable Long id){
         ModelUser user=userService.getOneUser(id);
         Role role=roleRepository.findByRoleName("ADMIN");

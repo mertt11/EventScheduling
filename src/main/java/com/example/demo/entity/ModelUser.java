@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,6 +15,7 @@ public class ModelUser {
     @Column(name="id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String lastName;
     private String email;
@@ -21,7 +24,7 @@ public class ModelUser {
     private Set<Event> events=new HashSet<>();
     private String password;
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,    cascade = {CascadeType.MERGE})
     @JoinTable(	name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -72,20 +75,20 @@ public class ModelUser {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public Set<Event> getEvents() {
         return events;
     }
 
     public void setEvents(Set<Event> events) {
         this.events = events;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Set<Role> getUserRoles() {

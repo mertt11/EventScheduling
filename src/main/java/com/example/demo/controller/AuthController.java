@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @RestController
@@ -47,7 +48,7 @@ public class AuthController {
         String jwtToken = jwtTokenGenerator.generateJwtToken(auth);
         return  "Bearer "+jwtToken;
     }
-    @PostMapping("/signin")
+    /*@PostMapping("/signin")
     public ResponseEntity<String> register(@RequestBody UserRequest signinRequest){
         if(userService.getOneUserByUserName(signinRequest.getEmail()) != null)
             return new ResponseEntity<>("Username already in use.", HttpStatus.BAD_REQUEST);
@@ -61,6 +62,19 @@ public class AuthController {
         user.addUserRoles(role);
         userService.saveOneUser(user);
         return new ResponseEntity<>("User successfully registered ",HttpStatus.CREATED);
+    }*/
+    @PostMapping("/signin")
+    public ResponseEntity<ModelUser> register(@RequestBody UserRequest signinRequest){
+        ModelUser user=new ModelUser();
+        user.setName(signinRequest.getName());
+        user.setLastName(signinRequest.getLastName());
+        user.setEmail(signinRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(signinRequest.getPassword()));
 
+        Role role=roleRepository.findByRoleName("USER");
+        user.addUserRoles(role);
+        userService.saveOneUser(user);
+        return ResponseEntity.ok(user);
     }
+
 }
