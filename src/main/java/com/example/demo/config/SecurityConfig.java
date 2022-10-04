@@ -53,7 +53,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(handler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                //.antMatchers("/users/giveadmin/{id}","/{eventId}/send-email","/events/{eventId}/users/{userId}","/events/del/{eventId}/users/{userId}","/events/post").hasAnyAuthority("ADMIN")
                 .antMatchers("/users/giveadmin/{id}","/{eventId}/send-email","/events/{eventId}/users/{userId}","/events/del/{eventId}/users/{userId}","/events/post").hasRole("ADMIN")
                 .antMatchers("/events/get","/users/get").hasAnyRole("USER","ADMIN")
                 .antMatchers("/auth/**").permitAll()

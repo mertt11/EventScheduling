@@ -29,17 +29,9 @@ public class JwtUserDetails implements UserDetails {
 
     private static Collection<GrantedAuthority> getAuthorities(ModelUser user){
         Set<Role> userRoles = user.getUserRoles();
-        for(Role r:userRoles){
-            System.out.println("-------------user roles "+r.getRoleName()+" user roles size: "+userRoles.size());
-        }
         Collection<GrantedAuthority> authorities = new ArrayList<>(userRoles.size());
-        System.out.println("*************authorities size "+authorities.size());
         for(Role r : userRoles){
             authorities.add(new SimpleGrantedAuthority(r.getRoleName().toUpperCase()));
-            System.out.println("ttttttttt: "+r.getRoleName());
-        }
-        for(GrantedAuthority a:authorities){
-            System.out.println("aaaaaaaa: "+a.getAuthority());
         }
         return authorities;
     }

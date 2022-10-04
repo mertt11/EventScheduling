@@ -31,7 +31,7 @@ public class EventController {
     @PostMapping("/post")
     Event createEvent(@RequestBody Event event){
         Authentication auth= SecurityContextHolder.getContext().getAuthentication();
-        ModelUser admin=modelUserRepository.findByEmail(auth.getName());//get the User that logged in.
+        ModelUser admin=modelUserRepository.findByEmail(auth.getName());//get the current User that logged in.
         event.setCreatedBy(admin);
         return eventService.saveOneEvent(event);
     }
