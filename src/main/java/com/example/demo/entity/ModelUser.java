@@ -1,8 +1,5 @@
 package com.example.demo.entity;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Data;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,7 +9,7 @@ import java.util.Set;
 @Table(name="userdata")
 public class ModelUser {
     @Id
-    @Column(name="id")
+    @Column(name="  user_id",nullable = false)
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
@@ -30,6 +27,9 @@ public class ModelUser {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> userRoles = new HashSet<>();
 
+
+
+
     public ModelUser(Long id, String name, String lastName, String email, String password) {
         this.id = id;
         this.name = name;
@@ -37,11 +37,9 @@ public class ModelUser {
         this.email = email;
         this.password = password;
     }
+
     public ModelUser(){}
 
-    public void addUserRoles(Role role){
-        userRoles.add(role);
-    }
 
     public Long getId() {
         return id;
@@ -98,4 +96,6 @@ public class ModelUser {
     public void setUserRoles(Set<Role> userRoles) {
         this.userRoles = userRoles;
     }
+
+
 }

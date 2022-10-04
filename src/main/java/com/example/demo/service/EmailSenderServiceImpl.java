@@ -2,10 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.controller.UserController;
 import com.example.demo.entity.Email;
-import com.example.demo.entity.Event;
 import com.example.demo.entity.ModelUser;
 import com.example.demo.repository.EmailSender;
-import com.example.demo.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,7 +16,7 @@ public class EmailSenderServiceImpl implements EmailSender {
 
 
     private final JavaMailSender mailSender;
-    private UserController userController;
+    private final UserController userController;
     @Value("${spring.mail.username}")
     private String sender;
 

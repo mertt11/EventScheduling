@@ -12,13 +12,14 @@ import java.util.Set;
 @Table(name="eventdata")
 public class Event {
     @Id
+    @Column(name="event_id")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
     private String title;
     @Column(columnDefinition = "text")
     private String text;
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)//bos birak
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="user_enrolled",
             joinColumns = @JoinColumn(name="event_id"),
             inverseJoinColumns = @JoinColumn(name="modelUser_id"))
@@ -26,16 +27,16 @@ public class Event {
     @JsonFormat(pattern="yyyy.MM.dd HH:mm:ss")
     private Date date;
 
-    public void enrollUser(ModelUser user){
-        enrolledUsers.add(user);
-    }
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "createdByUserid")
+    private ModelUser createdBy;
 
-    public void rmvUser(long userId){
-        ModelUser usr=this.enrolledUsers.stream().filter(t->t.getId()==userId).findFirst().orElse(null);
-        if(usr!=null){
-            this.enrolledUsers.remove(usr);
-            usr.getEvents().remove(this);
-        }
+    public Event(Long id,String title, String text, Date date) {
+        this.id=id;
+        this.title = title;
+        this.text = text;
+        this.date = date;
     }
 
     public String toString(){
@@ -82,4 +83,14 @@ public class Event {
     public void setEnrolledUsers(Set<ModelUser> enrolledUsers) {
         this.enrolledUsers = enrolledUsers;
     }
+
+    public ModelUser getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(ModelUser createdBy) {
+        this.createdBy = createdBy;
+    }
+
+
 }

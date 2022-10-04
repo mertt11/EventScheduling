@@ -12,7 +12,6 @@ public class Email {
 
     public Email(){}
 
-
     public String getMsgBody() {
         return msgBody;
     }

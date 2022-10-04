@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Event;
-//import com.example.demo.repository.ModelUserRepository;
+import com.example.demo.entity.ModelUser;
+import com.example.demo.repository.ModelUserRepository;
 import com.example.demo.service.EventService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,10 +13,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/events")
 public class EventController {
-    @Autowired
-    private EventService eventService;
 
-    //ModelUserRepository userRepository;
+    private final EventService eventService;
+    private final ModelUserRepository modelUserRepository;
+
+
+    public EventController(EventService eventService, ModelUserRepository modelUserRepository) {
+        this.eventService = eventService;
+        this.modelUserRepository = modelUserRepository;
+    }
 
     @GetMapping("/get")
     List<Event> getEvent(){
@@ -23,6 +30,9 @@ public class EventController {
 
     @PostMapping("/post")
     Event createEvent(@RequestBody Event event){
+        Authentication auth= SecurityContextHolder.getContext().getAuthentication();
+        ModelUser admin=modelUserRepository.findByEmail(auth.getName());//get the User that logged in.
+        event.setCreatedBy(admin);
         return eventService.saveOneEvent(event);
     }
 
@@ -30,10 +40,7 @@ public class EventController {
     Event participateUserToEvent(@PathVariable Long eventId, @PathVariable Long userId){
         return eventService.partUserToEvent(eventId,userId);
     }
-    /*@DeleteMapping("/{eventId}/users/{userId}")
-    Event deleteUserFromEvent(@PathVariable Long eventId, @PathVariable Long userId){
-        return eventService.delUserFromEvent(eventId,userId);
-    }*/
+
     @DeleteMapping("/{eventId}")
     public void removeEvent(@PathVariable Long eventId){
         eventService.removeById(eventId);

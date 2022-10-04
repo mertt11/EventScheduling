@@ -11,8 +11,8 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    private ModelUserRepository userRepository;
-    private EventRepository eventRepository;
+    private final ModelUserRepository userRepository;
+    private final EventRepository eventRepository;
     public UserService(ModelUserRepository userRepository,EventRepository eventRepository){
         this.userRepository=userRepository;
         this.eventRepository=eventRepository;
@@ -32,7 +32,7 @@ public class UserService {
     public boolean contain(String name,String lastName){
         return userRepository.existsByNameAndLastNameIgnoreCase(name,lastName);
     }
-    /*public ModelUser updateOneUser(Long id, ModelUser user) {
+    public ModelUser updateOneUser(Long id, ModelUser user) {
         Optional<ModelUser> usr=userRepository.findById(id);
         if(usr.isPresent()){
             ModelUser foundUser=usr.get();
@@ -43,8 +43,7 @@ public class UserService {
         }else {
             return null;
         }
-    }*/
-
+    }
     public void deleteById(Long id) {
         userRepository.deleteById(id);
     }

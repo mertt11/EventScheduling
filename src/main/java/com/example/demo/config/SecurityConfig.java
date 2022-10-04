@@ -2,7 +2,6 @@ package com.example.demo.config;
 
 import com.example.demo.security.JwtAuthEntryPoint;
 import com.example.demo.security.JwtAuthFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,8 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private UserDetailsService userDetailsService;
+
+    private final UserDetailsService userDetailsService;
     private final JwtAuthEntryPoint handler;
 
     public SecurityConfig(UserDetailsService userDetailsService, JwtAuthEntryPoint handler) {
@@ -54,8 +53,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(handler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/qqq/log","/users/giveadmin**","/{eventId}/send-email","/events/{eventId}/users/{userId}",
-                               "/events/del/{eventId}/users/{userId}","events/post").hasAnyAuthority("ADMIN")
+                //.antMatchers("/users/giveadmin/{id}","/{eventId}/send-email","/events/{eventId}/users/{userId}","/events/del/{eventId}/users/{userId}","/events/post").hasAnyAuthority("ADMIN")
+                .antMatchers("/users/giveadmin/{id}","/{eventId}/send-email","/events/{eventId}/users/{userId}","/events/del/{eventId}/users/{userId}","/events/post").hasRole("ADMIN")
+                .antMatchers("/events/get","/users/get").hasAnyRole("USER","ADMIN")
                 .antMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated();
         httpSecurity.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);

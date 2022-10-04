@@ -14,7 +14,8 @@ public class EventService {
 
     private final EventRepository eventRepository;
 
-    private ModelUserRepository userRepository;
+    private final ModelUserRepository userRepository;
+
 
     public EventService(EventRepository eventRepository, ModelUserRepository userRepository) {
         this.eventRepository = eventRepository;
@@ -24,22 +25,31 @@ public class EventService {
     public List<Event> getAll() {
         return eventRepository.findAll();
     }
+
     public Event saveOneEvent(Event event) {
+        
         return eventRepository.save(event);
     }
+
     public void removeById(Long eventId) {
         eventRepository.deleteById(eventId);
     }
+
     public Event partUserToEvent(Long eventId, Long userId) {
-        Event event=eventRepository.findById(eventId).get();
-        ModelUser user=userRepository.findById(userId).get();
-        event.enrollUser(user);
+        Event event = eventRepository.findById(eventId).get();
+        ModelUser user = userRepository.findById(userId).get();
+        event.getEnrolledUsers().add(user);
         return eventRepository.save(event);
     }
 
     public Event dellUserFromEvent(Long eventId, Long userId) {
-        Event event=eventRepository.findById(eventId).orElseThrow(() -> new ResourceAccessException("Not found with id = " + userId));
-        event.rmvUser(userId);
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new ResourceAccessException("Not found with id = " + userId));
+        ModelUser usr = event.getEnrolledUsers().stream().filter(t -> t.getId() == userId).findFirst().orElse(null);
+        if (usr != null) {
+            event.getEnrolledUsers().remove(usr);
+            usr.getEvents().remove(this);
+        }
         return eventRepository.save(event);
     }
+
 }
