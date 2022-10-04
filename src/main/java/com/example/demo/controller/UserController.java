@@ -48,7 +48,7 @@ public class UserController {
     @PostMapping("/giveadmin/{id}")
     public void beAdmin(@PathVariable Long id){
         ModelUser user=userService.getOneUser(id);
-        Role role=roleRepository.findByRoleName("ROLE_ADMIN");//ROLE_ sil
+        Role role=roleRepository.findByRoleName("ROLE_ADMIN");
         user.getUserRoles().add(role);
         userService.saveOneUser(user);
     }
